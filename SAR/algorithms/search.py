@@ -2,7 +2,7 @@ from algorithms.problems import SearchProblem
 import algorithms.utils as utils
 from world.game import Directions
 from algorithms.heuristics import nullHeuristic
-
+from algorithms.utils import Stack, Queue, PriorityQueue
 
 def tinyHouseSearch(problem: SearchProblem):
     """
@@ -28,26 +28,62 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    # TODO: Add your code here
-    utils.raiseNotDefined()
+    stack = Stack()
+    stack.push((problem.getStartState(), []))
+    visitados = []
 
+    while not stack.isEmpty():
+        state, actions = stack.pop()
+        if problem.isGoalState(state):
+            return actions
+        if state not in visitados:
+            visitados.append(state)
+            for (successor, action, cost) in problem.getSuccessors(state):
+                new_actions = actions + [action]
+                stack.push((successor, new_actions))
 
-def breadthFirstSearch(problem: SearchProblem):
+def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
-    # TODO: Add your code here
-    utils.raiseNotDefined()
+    queue = Queue()
+    start = problem.getStartState()
+    queue.push((start, []))
 
+    visitados = []
 
+    while not queue.isEmpty():
+        state, actions = queue.pop()
+
+        if problem.isGoalState(state):
+            return actions
+
+        if state not in visitados:
+            visitados.append(state)
+
+            for successor, action, cost in problem.getSuccessors(state):
+                nuevas_acciones = actions + [action]
+                queue.push((successor, nuevas_acciones))
 def uniformCostSearch(problem: SearchProblem):
     """
     Search the node of least total cost first.
     """
 
-    # TODO: Add your code here
-    utils.raiseNotDefined()
-
+    pq = PriorityQueue()
+    pq.push((problem.getStartState(), 0, []), 0) # Estado inicial tiene costo 0
+    visitados = []
+    
+    while not pq.isEmpty():
+        state, cost, actions = pq.pop()
+        if problem.isGoalState(state):
+            return actions
+        if state not in visitados:
+            visitados.append(state)
+            for successor, action, stepCost in problem.getSuccessors(state):
+                new_cost = cost + stepCost
+                new_actions = actions + [action]
+                pq.push((successor, new_cost, new_actions), new_cost)
+    return actions
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """
