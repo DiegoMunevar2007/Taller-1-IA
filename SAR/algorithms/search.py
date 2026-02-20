@@ -41,6 +41,7 @@ def depthFirstSearch(problem: SearchProblem):
             for (successor, action, cost) in problem.getSuccessors(state):
                 new_actions = actions + [action]
                 stack.push((successor, new_actions))
+    return []
 
 def breadthFirstSearch(problem):
     """
@@ -64,11 +65,33 @@ def breadthFirstSearch(problem):
             for successor, action, cost in problem.getSuccessors(state):
                 nuevas_acciones = actions + [action]
                 queue.push((successor, nuevas_acciones))
+    return []
 def uniformCostSearch(problem: SearchProblem):
     """
     Search the node of least total cost first.
     """
 
+    pq = PriorityQueue()
+    pq.push((problem.getStartState(), 0, []), 0) # Estado inicial tiene costo 0
+    visitados = []
+
+    while not pq.isEmpty():
+        state, cost, actions = pq.pop()
+        if problem.isGoalState(state):
+            return actions
+        if state not in visitados:
+            visitados.append(state)
+            for successor, action, stepCost in problem.getSuccessors(state):
+                new_cost = cost + stepCost
+                new_actions = actions + [action]
+                pq.push((successor, new_cost, new_actions), new_cost)
+    return []
+
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
+    """
+    Search the node that has the lowest combined cost and heuristic first.
+    """
+    # TODO: Add your code here
     pq = PriorityQueue()
     pq.push((problem.getStartState(), 0, []), 0) # Estado inicial tiene costo 0
     visitados = []
@@ -80,18 +103,10 @@ def uniformCostSearch(problem: SearchProblem):
         if state not in visitados:
             visitados.append(state)
             for successor, action, stepCost in problem.getSuccessors(state):
+                heurstic_cost = heuristic(successor, problem)
                 new_cost = cost + stepCost
                 new_actions = actions + [action]
-                pq.push((successor, new_cost, new_actions), new_cost)
-    return actions
-
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
-    """
-    Search the node that has the lowest combined cost and heuristic first.
-    """
-    # TODO: Add your code here
-    utils.raiseNotDefined()
-
+                pq.push((successor, new_cost, new_actions), new_cost + heurstic_cost)
 
 # Abbreviations (you can use them for the -f option in main.py)
 bfs = breadthFirstSearch
