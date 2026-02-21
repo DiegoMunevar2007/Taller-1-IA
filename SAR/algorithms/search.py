@@ -66,6 +66,7 @@ def breadthFirstSearch(problem):
                 nuevas_acciones = actions + [action]
                 queue.push((successor, nuevas_acciones))
     return []
+
 def uniformCostSearch(problem: SearchProblem):
     """
     Search the node of least total cost first.
@@ -91,22 +92,22 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """
     Search the node that has the lowest combined cost and heuristic first.
     """
-    # TODO: Add your code here
+
     pq = PriorityQueue()
     pq.push((problem.getStartState(), 0, []), 0) # Estado inicial tiene costo 0
     visitados = []
     
     while not pq.isEmpty():
-        state, cost, actions = pq.pop()
-        if problem.isGoalState(state):
-            return actions
-        if state not in visitados:
-            visitados.append(state)
-            for successor, action, stepCost in problem.getSuccessors(state):
-                heurstic_cost = heuristic(successor, problem)
-                new_cost = cost + stepCost
-                new_actions = actions + [action]
-                pq.push((successor, new_cost, new_actions), new_cost + heurstic_cost)
+        estado, costo, acciones = pq.pop()
+        if problem.isGoalState(estado):
+            return acciones
+        if estado not in visitados:
+            visitados.append(estado)
+            for sucesor, accion, costo_paso in problem.getSuccessors(estado):
+                heurstic_cost = heuristic(sucesor, problem)
+                new_cost = costo + costo_paso
+                new_actions = acciones + [accion]
+                pq.push((sucesor, new_cost, new_actions), new_cost + heurstic_cost)
 
 # Abbreviations (you can use them for the -f option in main.py)
 bfs = breadthFirstSearch
